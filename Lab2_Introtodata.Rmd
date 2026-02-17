@@ -1,0 +1,23 @@
+---
+title: 'Lab 2: Introduction to data'
+author: "Mei Qi Ng"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Getting Started
+
+# Load packages
+
+```{r cars}
+library(tidyverse)
+library(openintro)
+
+```
+# Exercise 1
+
+Looking at these 3 histograms, the 2nd histogram graph shows more distrubution as the binwidth is smaller compare to the 3rd histogram, where there is only 4 bars showing various counts of flights with different departure delay numbers. Clearer separation of flights on what timeline is seen here.  The 1st histogram seems to look like a middleground or default. The huge majority of the departure delays are close to zero which tells me that most flight leave on time or within a few minutes of their schedule with some few outliers. shows the true form where there are 7 bars that indicate the number of flights for each one that are within a certain range of dep_delay numbers.I would say the 3rd one is a more aggregated view and looke like it is grouping a large number of flights into one bin, making the data less disperse overall and harder to see the close detail of the time of delay departures. 
