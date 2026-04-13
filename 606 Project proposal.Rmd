@@ -1,0 +1,98 @@
+---
+title: "606 Project Proposal"
+author: "Mei Qi Ng"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+```
+
+### Data Preparation
+
+```{r load-data, echo=TRUE, results='hide', warning=FALSE, message=FALSE}
+# load data
+
+library(tidyverse)
+
+
+student_data <- read.csv(
+  "https://raw.githubusercontent.com/meiqing39/DATA-606/main/student-mat.csv",
+  sep = ";")
+
+head(student_data)
+```
+
+
+### Research question
+
+Does the amount of free time or the number of past class failures impact a student's final grade?
+
+### Hypotheses
+
+**Hypothesis #1:** Free time vs Grade
+
+-   **Null Hypothesis (**$H_0$): A student's amount of free time has no effect on their final math grade. The average final grade is the same across all levels of free time.
+-   **Alternative Hypothesis (**$H_A$): A student's amount of free time does impact their final math grade. The average final grade is not the same across all levels of free time.
+
+**Hypothesis #2:** Past Failures vs. Grades
+
+-   **Null Hypothesis (**$H_0$): The number of past class failures is not a significant predictor of a student's final math grade.
+-   **Alternative Hypothesis (**$H_A$): The number of past class failures is a significant predictor of a student's final math grade.
+
+### Cases
+
+Each case is a student in secondary school with a total of 395 cases in this data set.
+
+### Data collection
+
+**This data was collected during the 2005-2006 school year from 2 public school in the Alentejo region of Portugal (Gabriel Pereira and Monsinho da Silveira). The researchers collected the data by combining official school reports (grades and absences) with paper questionnaires given out to students during classes to gather demographic and lifestyle information**
+
+### Type of study
+
+**This study is an observation study. The researchers did not randomly assign treatments or change the student's environment. The student's behaviors, background, and academic results were all recorded through survey and school records**
+
+### Describe your variables?
+
+**Dependent Variable (Response):** G3 (Final math grade). This is a quantitative (numerical) variable, measured on a discrete scale from 0 to 20.
+
+**Independent Variable 1 (Explanatory):** freetime (Free time after school). This is a qualitative variable, measured on a self-reported scale from 1 (very low) to 5 (very high).
+
+**Independent Variable 2 (Explanatory):** failures (Number of past class failures). This is a quantitative variable, showing a count (0, 1, 2, or 3+).
+
+**If you are are running a regression or similar model, which one is your dependent variable?**
+
+-   Dependent variable is G3 (The student's final math grade - quantitative)
+
+### Data Source
+
+**Citation: Cortez, Paulo. (2014). Student Performance. UCI Machine Learning Repository. <https://doi.org/10.24432/C5TG7T>.**
+
+### Relevant summary statistics
+
+**Provide summary statistics for each the variables. Also include appropriate visualizations related to your research question (e.g. scatter plot, boxplots, etc). This step requires the use of R, hence a code chunk is provided below. Insert more code chunks as needed.**
+
+```{r}
+# Summary of dependent variable (Final Grade)
+summary(student_data$G3)
+
+# Summary of the independent variables
+summary(student_data$freetime)
+table(student_data$failures) # table() to see the count of each failure category
+
+# Visualization 1: Final Grade by Free Time
+ggplot(student_data, aes(x= factor(freetime), y = G3))+
+  geom_boxplot(fill = "lightblue", color = "blue")+
+  labs(title = "Impact of Free Time on Final Math Grade",
+        x = "Amount of Free Time (1 = Very Low, 5 = Very High)",
+        y  = "Final Grade (0 - 20)")
+
+# Visualization 2: Final Grade by Past Failures
+ggplot(student_data, aes(x= factor(freetime), y = G3))+
+  geom_boxplot(fill = "red", color = "coral")+
+  labs(title = "Impact of Past Failure on Final Math Grade",
+        x = "Number of Past Class Failures",
+        y  = "Final Grade (0 - 20)")
+```
