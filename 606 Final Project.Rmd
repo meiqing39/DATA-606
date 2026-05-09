@@ -16,26 +16,26 @@ knitr::opts_chunk$set(echo = TRUE)
 # load data
 library(tidyverse)
 
-student_data <- read.csv("student-mat.csv", sep = ";")
+student_data <- read.csv("https://raw.githubusercontent.com/meiqing39/DATA-606/refs/heads/main/student-mat.csv", sep = ";")
 
 head(student_data)
 ```
 
 ### Research question
 
-Is the amount of free time or the number of past class failures associated with a student's final grade? 
+Is the amount of free time or the number of past class failures associated with a student's final grade?
 
 ### Hypotheses
 
 **Hypothesis #1:** Free time vs Grade
 
--   **Null Hypothesis (**$H_0$): A student's amount of free time is not associated with their final math grade. The average final grade is the same across all levels of free time.
--   **Alternative Hypothesis (**$H_A$): A student's amount of free time is associated with their final math grade. The average final grade is not the same across all levels of free time.
+- **Null Hypothesis (**$H_0$): A student's amount of free time is not associated with their final math grade. The average final grade is the same across all levels of free time.
+- **Alternative Hypothesis (**$H_A$): A student's amount of free time is associated with their final math grade. The average final grade is not the same across all levels of free time.
 
 **Hypothesis #2:** Past Failures vs. Grades
 
--   **Null Hypothesis (**$H_0$): The number of past class failures is not a significant predictor of a student's final math grade.
--   **Alternative Hypothesis (**$H_A$): The number of past class failures is a significant predictor of a student's final math grade.
+- **Null Hypothesis (**$H_0$): The number of past class failures is not a significant predictor of a student's final math grade.
+- **Alternative Hypothesis (**$H_A$): The number of past class failures is a significant predictor of a student's final math grade.
 
 ### Cases
 
@@ -59,7 +59,7 @@ Each case is a student in secondary school with a total of 395 cases in this dat
 
 **If you are are running a regression or similar model, which one is your dependent variable?**
 
--   Dependent variable is G3 (The student's final math grade - quantitative)
+- Dependent variable is G3 (The student's final math grade - quantitative)
 
 ### Data Source
 
@@ -94,10 +94,10 @@ ggplot(student_data, aes(x= factor(failures), y = G3))+
 
 **Analysis of Free Time vs. Final Grade: The visualization reveals a non-linear relationship between a student's self-reported free time and their final math grade. Students reporting a "2" (Low) for free time exhibit the highest median grade. This suggests a potential "sweet spot" of structured time; these students may be heavily engaged in organized extracurricular activities that reduce their free time but build strong discipline and time-management skills. Conversely, students at the lowest extreme (1) may be burdened by exhausting external obligations like jobs, while those at the highest extremes (4 and 5) may lack the structured routine necessary for peak academic achievement. Furthermore, because this data is self-reported, highly driven students with rigorous study habits may simply perceive themselves as having less free time.**
 
-
 **Analysis of Past Failures vs. Final Grade: The visualization demonstrates a clear, negative relationship between a student's number of past class failures and their final math grade. As the number of past failures increases from 0 to 3, the median final grade slowly declines. Students with zero previous failures exhibit the highest median grade, which is expected as it suggests a solid academic foundation. Conversely, the consistent drop in grades for students with 1, 2, or 3 past failures indicates that these students are likely facing compounding challenges. This downward trend suggests that past failures are a strong indicator of current academic struggles, potentially pointing to unaddressed gaps in base math knowledge or external obstacles that continue to interfere with their education.**
 
 ### Assumption
+
 ```{r}
 # Check: Distribution of Final Grades
 ggplot(student_data, aes(x = G3)) +
@@ -106,12 +106,13 @@ ggplot(student_data, aes(x = G3)) +
        x = "Final Grade (0 - 20)",
        y = "Number of Students")
 ```
-Other than the outlier at zero , the rest of the data (Grade 4 - 19) forms a normal bell curved shaped distribution; peaking at 10 and taper off at the sides. The assumption of normality is mostly met. 
 
-Zero Anomaly: Around 39 students scored 0. This is very likely due to students who droppped the class/did not show up for the final exam as we are looking at the Portuguese school system. 
-Spike at Zero = Limitation of the Analysis **
+Other than the outlier at zero , the rest of the data (Grade 4 - 19) forms a normal bell curved shaped distribution; peaking at 10 and taper off at the sides. The assumption of normality is mostly met.
 
-ANOVA Tests 
+Zero Anomaly: Around 39 students scored 0. This is very likely due to students who droppped the class/did not show up for the final exam as we are looking at the Portuguese school system. Spike at Zero = Limitation of the Analysis \*\*
+
+## ANOVA Tests
+
 ```{r}
 # Run Test 1: ANOVA for Free Time
 anova_freetime <- aov(G3 ~ factor(freetime), data = student_data)  #use factor to force R to treat as separate groups
@@ -121,7 +122,6 @@ print("ANOVA Summary: Free Time vs Final Grade")
 summary(anova_freetime)
 ```
 
-
 ```{r}
 # Run Test 2: ANOVA for Past Failures
 anova_failures <- aov(G3 ~ factor(failures), data = student_data)
@@ -130,16 +130,94 @@ print("ANOVA Summary: Past Failures vs Final Grade")
 summary(anova_failures)
 
 ```
-Test 1: Free Time vs. Final Grade
-P-Value: On Pr(>F) column --> p-value is 0.0657.
 
-Interpretation: Generally, the standard threshold for significance is 0.05. Because 0.0657 is greater than 0.05, this result is not statistically significant.
+$\underline{\text{**Test 1: Free Time vs. Final Grade**}}$
 
-The Conclusion: We fail to reject the Null Hypothesis. Even though we saw that interesting "sweet spot" at level 2 in the boxplot, this ANOVA tells us that we cannot confidently prove that free time has a significant relationship with the final grade. The variations we saw might just be due to random chance within this specific sample of 395 students.
+**P-Value:** On Pr(\>F) column --\> p-value is 0.0657.
 
-Test 2: Past Failures vs. Final Grade
-The P-Value: Your p-value is 1.64e-12.
+**Interpretation:** Generally, the standard threshold for significance is 0.05. Because 0.0657 is greater than 0.05, this result is not statistically significant.
 
-The Interpretation: The e-12 is scientific notation. It means you need to move the decimal point 12 spaces to the left. That number is actually 0.00000000000164. Because this is drastically less than 0.05, this result is highly statistically significant (which is also why R put three little *** stars next to it!).
+**The Conclusion:** We fail to reject the Null Hypothesis. Even though we saw that interesting "sweet spot" at level 2 in the boxplot, this ANOVA tells us that we cannot confidently prove that free time has a significant relationship with the final grade. The variations we saw might just be due to random chance within this specific sample of 395 students. Hence, the amount of self-reported free time is not a statistically significant predictor of a student's final math grade in this data set.
 
-The Conclusion: We reject the Null Hypothesis. We have strong statistical evidence that the number of past failures is significantly associated with a student's final math grade. That downward staircase trend we saw in the red boxplot is very real.
+$\underline{\text{**Test 2: Past Failures vs. Final Grade**}}$
+
+**P-Value:** p-value is 1.64e-12.
+
+**Interpretation:** The p-value here is drastically less than 0.05, this result is highly statistically significant!
+
+**Conclusion:** We reject the Null Hypothesis. From this value, this is a strong statistical evidence that the number of past classes a student has failed is significantly associated with a student's final math grade. That downward trend in the red boxplot is very real.
+
+## Multiple Linear Regression Model
+
+ANOVA revealed that student's past failures had a strong relationship with their final grades, while free time on its own was not statistically significant. To see how these variables affect each other, a multiple linear regession model is built to observe this interaction.
+
+```{r}
+student_model <- lm(G3 ~ factor(freetime) + failures, data = student_data)
+
+# Print the summary to see coefficients, p-values, and R-squared
+print("Multiple Regression Summary")
+summary(student_model)
+
+
+```
+
+This model yielded an $\underline{\text{Adjusted R-squared of 0.15}}$. This value reveals that exactly 15% of the variance in a student's final math grade can be explained by the combination of their past failures and their amount of free time. Although 15% may seem low, but in the real world, that number is important and surprising that just two reported life variable can account for that much in a student's final grade.
+
+Strong Predictor Past Failures:
+
+```         
+Failure = -2.3198 and p value = 1.12e-14
+```
+
+Holding free time constant, the model confirms a significant negative relation between past failures and current academic success. For every addition past failure a student accumulates, their predicted final math grade drops by 2.32 points which matches the trend seen earlier and support the idea that past failures is a strong indication of current academic struggles
+
+Plot twist - Free Time: 
+
+```
+all p values (Pr(\>\|t\|) in factor(freetime) rows are greater than 0.05
+```
+
+Interestingly, when past failures are controlled, the amount of free time a student has is no longer statistically significant. None of groups showed a significant difference from the baseline (very low free time). This may indicate the "sweet spot" seen during the initial boxplot analysis may have been masking the underlying effect of past failures. From this model, it can be concluded that free time alone is not a reliable predictor of a student's final grade when their previous academic records are taken into account.
+
+
+
+## Diagnostic Plots to Test
+
+```{r}
+# Plot 1
+
+ggplot(data = student_model, aes(x = .fitted, y = .resid)) +
+  geom_jitter(color = "blue") +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "red", linewidth = 1) +
+  labs(title = "Residuals vs. Fitted Values",
+       x = "Fitted (Predicted) Grades",
+       y = "Residuals")
+```
+
+
+Plot 1: Residuals vs. Fitted (Linearity & Constant Variance): "Looking at our first plot, we do not see a distinct curve, which supports our assumption of linearity. However, we do see some clustering and a hard diagonal boundary. This is a structural artifact of the grading system—because grades are strictly capped at 20, the model's residuals hit a 'ceiling.' Because of this uneven spread, the condition for constant variance is slightly strained.
+
+
+
+```{r}
+# Plot 2
+ggplot(data = student_model, aes(x = .resid)) +
+  geom_histogram(binwidth = 1, fill = "blue", color = "black") +
+  labs(title = "Histogram of Residuals",
+       x = "Residuals",
+       y = "Count")
+
+```
+
+Plots 2 & 3: Histogram and Q-Q Plot (Normality): Our histogram and Q-Q plot help us check if our errors are normally distributed. While the bulk of the data forms a relatively normal bell shape, we see a distinct leftward skew. This skew is driven by the cluster of students who scored exactly a 0—likely representing students who dropped the course or missed the final exam. Because of these extreme outliers, the condition of perfectly normal residuals is not entirely met.
+
+
+```{r}
+# Plot 3
+
+ggplot(data = student_model, aes(sample = .resid)) +
+  stat_qq() +
+  stat_qq_line(color = "red", linewidth = 1) +
+  labs(title = "Q-Q Plot of Residuals")
+```
+The Conclusion: While linear regression is robust, these slight violations of constant variance and normality due to the 0-20 grading scale are important limitations of this analysis, and suggest that the exact p-values should be interpreted as strong directional indicators rather than absolute certainties.
